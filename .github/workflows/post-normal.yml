@@ -1,0 +1,30 @@
+name: Post Normal (Threads)
+
+on:
+  schedule:
+    # 08:00 JST
+    - cron: "0 23 * * *"
+    # 12:30 JST
+    - cron: "30 3 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Post normal post to Threads
+        run: npm run post:normal
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
