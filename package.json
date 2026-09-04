@@ -1,0 +1,24 @@
+{
+  "name": "threads-auto-poster",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MASH UP向けThreads自動投稿システム(通常投稿・ゴースト投稿)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "post:normal": "tsx src/scripts/postNormal.ts",
+    "post:ghost": "tsx src/scripts/postGhost.ts",
+    "delete:due": "tsx src/scripts/deleteDue.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
