@@ -1,6 +1,5 @@
 import "dotenv/config";
-import { loadEventConfig } from "../config.js";
-import { generatePostText } from "../content/generator.js";
+import { pickPostText } from "../content/pool.js";
 import { createThreadsPost } from "../threads/client.js";
 import { readPendingDeletions, writePendingDeletions } from "../state/store.js";
 
@@ -15,9 +14,8 @@ function randomDeleteDelayMs(): number {
 }
 
 async function main(): Promise<void> {
-  const event = loadEventConfig();
-  const text = await generatePostText("ghost", event);
-  console.log("Generated ghost post text:\n", text);
+  const text = pickPostText("ghost");
+  console.log("Selected ghost post text:\n", text);
 
   const mediaId = await createThreadsPost(text);
   const now = new Date();

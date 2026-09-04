@@ -1,8 +1,8 @@
 # Threads Auto Poster (MASH UP)
 
-MASH UP(エンタメイベント)のThreads公式アカウント向けに、Claude APIで生成した投稿文を
+MASH UP(エンタメイベント)のThreads公式アカウント向けに、あらかじめ用意した投稿文を
 日本の20代がよく見る時間帯に自動投稿するシステムです。GitHub Actionsの定期実行だけで動作し、
-専用サーバーは不要です。
+専用サーバーも有料のAPIも不要です。
 
 ## 投稿の種類
 
@@ -19,8 +19,9 @@ MASH UP(エンタメイベント)のThreads公式アカウント向けに、Clau
 - `.github/workflows/delete-ghost.yml` … 15分おきに実行し、削除予定時刻を過ぎた
   ゴースト投稿を削除、状態ファイルを更新してコミット
 
-投稿文はClaude API(`src/content/prompts.ts`)で生成し、Threads API
-(`src/threads/client.ts`)経由でコンテナ作成→公開の2段階で投稿します。
+投稿文は `config/posts.json` に用意したテキストの中からランダムに1件選び、Threads API
+(`src/threads/client.ts`)経由でコンテナ作成→公開の2段階で投稿します。AIによる自動生成は
+行わないため、追加の課金は発生しません。
 
 ## セットアップ
 
@@ -29,25 +30,21 @@ MASH UP(エンタメイベント)のThreads公式アカウント向けに、Clau
 ```bash
 npm install
 cp .env.example .env
-# .env にThreadsアクセストークン・ユーザーID・Anthropic APIキーを設定
+# .env にThreadsアクセストークン・ユーザーIDを設定
 ```
 
-### 2. イベント情報の編集
+### 2. 投稿文の編集
 
-`config/event.json` を実際のMASH UPのイベント情報に書き換えてください。
+`config/posts.json` に、通常投稿用(`normal`)とゴースト投稿用(`ghost`)の文章をそれぞれ
+配列で用意しています。実際のMASH UPの情報(日程・会場・チケットURLなど)に合わせて
+自由に書き換え・追加・削除してください。投稿のたびにこの中からランダムで1件選ばれます。
 
 ```json
 {
-  "name": "MASH UP",
-  "tagline": "夜を彩るエンタメの祭典",
-  "date": "開催日",
-  "venue": "会場",
-  "ticketUrl": "チケット購入URL",
-  "hashtags": ["#MASHUP", "#マッシュアップ"]
+  "normal": ["投稿文1", "投稿文2", "..."],
+  "ghost": ["投稿文1", "投稿文2", "..."]
 }
 ```
-
-投稿トーンや文字数制限を変えたい場合は `src/content/prompts.ts` を編集してください。
 
 ### 3. GitHub Secretsの設定
 
@@ -57,9 +54,6 @@ cp .env.example .env
 |---|---|
 | `THREADS_ACCESS_TOKEN` | Threads APIのアクセストークン(長期トークン推奨) |
 | `THREADS_USER_ID` | 投稿先ThreadsアカウントのユーザーID |
-| `ANTHROPIC_API_KEY` | Claude APIキー |
-
-モデルを変更したい場合は Variables に `ANTHROPIC_MODEL` を追加してください(未設定時は `claude-sonnet-5`)。
 
 ### 4. ワークフローの有効化
 
@@ -86,5 +80,5 @@ npm run delete:due    # 削除予定時刻を過ぎたゴースト投稿を削�
 - **GitHub Actionsのスケジュール精度**: GitHub Actionsの`schedule`は負荷状況により
   数分〜十数分程度遅延することがあります。ゴースト投稿の削除チェックは15分間隔のため、
   実際の削除は予定時刻から最大15分程度後ろにずれる可能性があります。
-- 投稿文はAI生成のため、公開前に内容を確認したい場合は `workflow_dispatch` で手動実行し、
-  投稿結果をThreads上で確認する運用を推奨します。
+- **投稿文のマンネリ化**: ランダム選択のため、`config/posts.json` の件数が少ないと
+  同じ投稿が短期間で繰り返されることがあります。定期的に文章を追加・更新してください。
