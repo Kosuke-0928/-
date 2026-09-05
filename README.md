@@ -22,7 +22,8 @@ MASH UP(produced by AiM PISTA)内の新企画「ネオクリエイターフェ�
 
 投稿文は `config/posts.json` に用意したテキストの中からランダムに1件選び、Threads API
 (`src/threads/client.ts`)経由でコンテナ作成→公開の2段階で投稿します。AIによる自動生成は
-行わないため、追加の課金は発生しません。
+行わないため、追加の課金は発生しません。すべての投稿には `assets/neo-creator-fes.png`
+のフライヤー画像を添付します。
 
 ## セットアップ
 
@@ -47,7 +48,15 @@ cp .env.example .env
 }
 ```
 
-### 3. GitHub Secretsの設定
+### 3. 投稿画像について
+
+`assets/neo-creator-fes.png` を投稿画像として使用しています。差し替えたい場合は同じ
+パスに新しい画像を上書きしてください。Threads APIは画像を「誰でもアクセスできる公開URL」
+として要求するため、**このリポジトリはpublic(公開)設定である必要があります**。画像は
+`src/config.ts` の `POST_IMAGE_URL`(`raw.githubusercontent.com` 経由のURL)で参照して
+います。
+
+### 4. GitHub Secretsの設定
 
 リポジトリの Settings → Secrets and variables → Actions で以下を登録します。
 
@@ -56,7 +65,7 @@ cp .env.example .env
 | `THREADS_ACCESS_TOKEN` | Threads APIのアクセストークン(長期トークン推奨) |
 | `THREADS_USER_ID` | 投稿先ThreadsアカウントのユーザーID |
 
-### 4. ワークフローの有効化
+### 5. ワークフローの有効化
 
 `.github/workflows/*.yml` はデフォルトブランチにマージされると自動的にスケジュール実行されます。
 `workflow_dispatch` にも対応しているので、Actionsタブから手動実行して動作確認できます。

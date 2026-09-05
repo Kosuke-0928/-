@@ -18,14 +18,17 @@ async function parseErrorBody(res: Response): Promise<string> {
  * Threads APIは投稿作成が「コンテナ作成」→「公開」の2段階になっている。
  * https://developers.facebook.com/docs/threads/posts
  */
-export async function createThreadsPost(text: string): Promise<string> {
+export async function createThreadsPost(text: string, imageUrl?: string): Promise<string> {
   const { accessToken, userId } = getThreadsConfig();
 
   const createParams = new URLSearchParams({
-    media_type: "TEXT",
+    media_type: imageUrl ? "IMAGE" : "TEXT",
     text,
     access_token: accessToken,
   });
+  if (imageUrl) {
+    createParams.set("image_url", imageUrl);
+  }
   const createRes = await fetch(`${THREADS_API_BASE}/${userId}/threads`, {
     method: "POST",
     body: createParams,
