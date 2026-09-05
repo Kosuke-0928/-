@@ -3,6 +3,11 @@ export interface ThreadsConfig {
   userId: string;
 }
 
+// GitHubリポジトリがpublicであることが前提(Threads APIはimage_urlに
+// 誰でもアクセスできるURLを要求するため)。
+export const POST_IMAGE_URL =
+  "https://raw.githubusercontent.com/Kosuke-0928/-/main/assets/neo-creator-fes.png";
+
 export function getThreadsConfig(): ThreadsConfig {
   const accessToken = process.env.THREADS_ACCESS_TOKEN;
   const userId = process.env.THREADS_USER_ID;
