@@ -20,10 +20,10 @@ MASH UP(produced by AiM PISTA)内の新企画「ネオクリエイターフェ�
 - `.github/workflows/delete-ghost.yml` … 15分おきに実行し、削除予定時刻を過ぎた
   ゴースト投稿を削除、状態ファイルを更新してコミット
 
-投稿文は `config/posts.json` に用意したテキストの中からランダムに1件選び、Threads API
+投稿文は `config/posts.json` に用意したテキストの中から、画像は `assets/` 内のフライヤー
+画像の中から、それぞれ投稿のたびに独立してランダムに1件選び、Threads API
 (`src/threads/client.ts`)経由でコンテナ作成→公開の2段階で投稿します。AIによる自動生成は
-行わないため、追加の課金は発生しません。すべての投稿には `assets/neo-creator-fes.png`
-のフライヤー画像を添付します。
+行わないため、追加の課金は発生しません。
 
 ## セットアップ
 
@@ -50,11 +50,12 @@ cp .env.example .env
 
 ### 3. 投稿画像について
 
-`assets/neo-creator-fes.png` を投稿画像として使用しています。差し替えたい場合は同じ
-パスに新しい画像を上書きしてください。Threads APIは画像を「誰でもアクセスできる公開URL」
-として要求するため、**このリポジトリはpublic(公開)設定である必要があります**。画像は
-`src/config.ts` の `POST_IMAGE_URL`(`raw.githubusercontent.com` 経由のURL)で参照して
-います。
+`assets/` 内の複数のフライヤー画像(`neo-creator-fes.png`、`neo-creator-fes-v2.png` など)
+を投稿画像として使用しています。投稿のたびにこの中からランダムで1枚選ばれます。画像を
+追加・差し替えたい場合は、ファイルを `assets/` に置いた上で `src/config.ts` の
+`POST_IMAGE_URLS` にURLを追加・編集してください。Threads APIは画像を「誰でもアクセス
+できる公開URL」として要求するため、**このリポジトリはpublic(公開)設定である必要が
+あります**。
 
 ### 4. GitHub Secretsの設定
 

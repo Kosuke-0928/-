@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { POST_IMAGE_URLS } from "../config.js";
 
 export type PostKind = "normal" | "ghost";
 
@@ -20,4 +21,8 @@ export function pickPostText(kind: PostKind): string {
     throw new Error(`config/posts.json has no entries for "${kind}"`);
   }
   return pool[Math.floor(Math.random() * pool.length)] as string;
+}
+
+export function pickPostImageUrl(): string {
+  return POST_IMAGE_URLS[Math.floor(Math.random() * POST_IMAGE_URLS.length)] as string;
 }

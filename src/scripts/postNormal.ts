@@ -1,13 +1,14 @@
 import "dotenv/config";
-import { POST_IMAGE_URL } from "../config.js";
-import { pickPostText } from "../content/pool.js";
+import { pickPostImageUrl, pickPostText } from "../content/pool.js";
 import { createThreadsPost } from "../threads/client.js";
 
 async function main(): Promise<void> {
   const text = pickPostText("normal");
+  const imageUrl = pickPostImageUrl();
   console.log("Selected normal post text:\n", text);
+  console.log("Selected image:", imageUrl);
 
-  const mediaId = await createThreadsPost(text, POST_IMAGE_URL);
+  const mediaId = await createThreadsPost(text, imageUrl);
   console.log(`Posted normal post. media_id=${mediaId}`);
 }
 

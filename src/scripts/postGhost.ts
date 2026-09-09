@@ -1,6 +1,5 @@
 import "dotenv/config";
-import { POST_IMAGE_URL } from "../config.js";
-import { pickPostText } from "../content/pool.js";
+import { pickPostImageUrl, pickPostText } from "../content/pool.js";
 import { createThreadsPost } from "../threads/client.js";
 import { readPendingDeletions, writePendingDeletions } from "../state/store.js";
 
@@ -16,9 +15,11 @@ function randomDeleteDelayMs(): number {
 
 async function main(): Promise<void> {
   const text = pickPostText("ghost");
+  const imageUrl = pickPostImageUrl();
   console.log("Selected ghost post text:\n", text);
+  console.log("Selected image:", imageUrl);
 
-  const mediaId = await createThreadsPost(text, POST_IMAGE_URL);
+  const mediaId = await createThreadsPost(text, imageUrl);
   const now = new Date();
   const deleteAt = new Date(now.getTime() + randomDeleteDelayMs());
   console.log(`Posted ghost post. media_id=${mediaId}, deleteAt=${deleteAt.toISOString()}`);
