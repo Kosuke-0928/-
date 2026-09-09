@@ -1,10 +1,13 @@
 import "dotenv/config";
+import { tryGenerateWithGemini } from "../content/gemini.js";
 import { pickPostImageUrl, pickPostText } from "../content/pool.js";
 import { createThreadsPost } from "../threads/client.js";
 
 async function main(): Promise<void> {
-  const text = pickPostText("normal");
+  const generated = await tryGenerateWithGemini("normal");
+  const text = generated ?? pickPostText("normal");
   const imageUrl = pickPostImageUrl();
+  console.log(`Post text source: ${generated ? "Gemini" : "static pool"}`);
   console.log("Selected normal post text:\n", text);
   console.log("Selected image:", imageUrl);
 
