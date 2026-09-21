@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { tryGenerateWithGemini } from "../content/gemini.js";
 import { pickPostImageUrl, pickPostText } from "../content/pool.js";
 import { createThreadsPost } from "../threads/client.js";
 import { readPendingDeletions, writePendingDeletions } from "../state/store.js";
@@ -14,8 +15,10 @@ function randomDeleteDelayMs(): number {
 }
 
 async function main(): Promise<void> {
-  const text = pickPostText("ghost");
+  const generated = await tryGenerateWithGemini("ghost");
+  const text = generated ?? pickPostText("ghost");
   const imageUrl = pickPostImageUrl();
+  console.log(`Post text source: ${generated ? "Gemini" : "static pool"}`);
   console.log("Selected ghost post text:\n", text);
   console.log("Selected image:", imageUrl);
 
